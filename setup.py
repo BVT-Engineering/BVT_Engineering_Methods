@@ -1,9 +1,7 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
-    name='BVT_Engineering_Methods',
-    version='0.1dev',
-    py_modules=['NZS_1170_5'],
-    license='Creative Commons Attribution-Noncommercial-Share Alike license',
-   
+    name='example',
+    version='0.1.0',
+    packages=find_packages(include=['exampleproject', 'exampleproject.*'])
 )
