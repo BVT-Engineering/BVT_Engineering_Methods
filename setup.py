@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='example',
+    name='BVT_Engineering_Methods',
     version='0.1dev',
     packages=find_packages()
 )
