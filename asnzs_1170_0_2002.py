@@ -9,7 +9,7 @@ Original file is located at
 #AS/NZS 1170.0:2002 .py method
 
 This method references the following standard:
-AS/NZS 1170.0:2002 (incorporating Amendment Nos 1,2,3,4 and 5)
+AS/NZS 1170.0:2002 (incorporating Amendment Nos 1,2,3,4 and 5), for New Zealand structures.
 
 Method developed 28 August 2021
 (c) BVT Consulting Ltd
@@ -23,12 +23,12 @@ Reviewed -
 
 import pandas as pd
 
-"""#Annual Probability of Exceedance
+"""#3.4 Annual Probability of Exceedance
 
-Given the Design working life and the Importance level, this function returns the Annual probability of exceedance for Wind, Snow and Earthquake, as given in Table 3.3.
+Given the Design working life and the Importance level, this function returns the Annual probability of exceedance for wind, snow and earthquake Ultimate limit states, and service limit states for SLS1 and SLS2, as given in Table 3.3.
 """
 
-#@title Table 3.3
+#@title Table 3.3 - Annual probability of exceedence { vertical-output: true }
 #recreate table 3.3
 table3_3 = pd.DataFrame(
 {"Wind ULS":['1/100',
@@ -89,10 +89,162 @@ table3_3 = pd.DataFrame(
 
 table3_3
 
+#@title Annual probability of exceedance { run: "auto", vertical-output: true }
+Design_Working_Life = "25 years" #@param ["Construction equipment", "Less than 6 months", "5 years", "25 years", "50 years", "100 years or more"]
+Importance_Level = 3 #@param ["1", "2", "3", "4"] {type:"raw"}
+Limit_State = "Earthquake ULS" #@param ["Wind ULS", "Snow ULS", "Earthquake ULS", "SLS1", "SLS2"]
+
 def annual_probability_of_exceedence(Design_Working_Life,Importance_Level,Limit_State):
 
     df1 = table3_3.loc[(Design_Working_Life, Importance_Level),Limit_State]
 
     return df1
+  
+annual_probability_of_exceedence(Design_Working_Life,Importance_Level,Limit_State)
 
-annual_probability_of_exceedence('50 years',4,'Wind ULS')
+"""#Table 4.1 Combinations of Actions - Imposed load factors
+
+Given the Character of imposed action, this function returns the short term, long term, combination and earthquake factors. 
+"""
+
+#@title Table 4.1 - Short-term, long-term and combination factors { vertical-output: true }
+#recreate table 4.1
+table4_1 = pd.DataFrame(
+{"Short-term factor":[0.7,0.7,0.7,0.7,1.0,1.0,0.7,0.7,1.0,1.0,1.0,1.0,1.0,1.0],
+ "Long-term factor":[0.4,0.4,0.4,0.4,0.6,0.6,0.4,0.0,0.6,0.4,0.6,0.0,0.0,1.0],
+ "Combination factor":[0.4,0.4,0.4,0.4,0.6,0.6,0.4,0.0,0.6,0.4,0.4,0.0,0.0,1.2],
+ "Earthquake combination factor":[0.3,0.3,0.3,0.3,0.6,0.6,0.3,0.0,0.3,0.3,0.3,0.0,0.0,1.0]
+ },
+ index = pd.MultiIndex.from_tuples([("Distributed imposed actions","Residential and domestic floors"),
+                                  ("Distributed imposed actions","Office floors"),
+                                  ("Distributed imposed actions","Parking floors"),
+                                  ("Distributed imposed actions", "Retail floors"),
+                                  ("Distributed imposed actions","Storage floors"),
+                                  ("Distributed imposed actions","Other floors"), 
+                                  ("Distributed imposed actions","Roofs used for floor type activities"),
+                                  ("Distributed imposed actions","All other roofs"),
+                                  ("Concentrated imposed actions","Floors"),
+                                  ("Concentrated imposed actions","Floors of domestic housing"), 
+                                  ("Concentrated imposed actions","Roofs used for floor type activities"), 
+                                  ("Concentrated imposed actions","All other roofs"), 
+                                  ("Concentrated imposed actions","Balustrades"), 
+                                  ("Concentrated imposed actions","Long-term installed machinery, tare weight")]) 
+)
+
+table4_1
+
+#@title Character of imposed action { run: "auto", vertical-output: true }
+
+action_type = "Distributed imposed actions" #@param ["Distributed imposed actions", "Concentrated imposed actions"]
+distributed_action_character = "Storage floors" #@param ["Residential and domestic floors", "Office floors", "Parking floors", "Retail floors", "Storage floors", "Other floors", "Roofs used for floor type activities", "All other roofs"]
+concentrated_action_character = "Floors" #@param ["Floors", "Floors of domestic housing", "Roofs used for floor type activities", "All other roofs", "Balustrades", "Long-term installed machinery, tare weight"]
+
+if action_type == "Distributed imposed actions": 
+    action_character=distributed_action_character
+elif action_type == "Concentrated imposed actions": 
+    action_character=concentrated_action_character
+
+def imposed_load_factors(action_type,action_character):
+    
+    df1 = table4_1.loc[(action_type,action_character)]
+
+    return df1
+
+imposed_load_factors(action_type,action_character)
+
+"""#4.2 Combinations of actions for ultimate and serviceability limit states
+
+Given an action type and action character for imposed loads, this function returns a summary of all action combinations as a dataframe.
+"""
+
+#@title Combination of actions table for ULS and SLS { vertical-output: true }
+
+def action_combinations(action_type,action_character):
+
+    df1 = imposed_load_factors(action_type,action_character)
+    PsiS = df1.iloc[0]
+    PsiL = df1.iloc[1]
+    PsiC = df1.iloc[2]
+    PsiE = df1.iloc[3]
+
+    df2 = pd.DataFrame(
+        {'G, permanent action':[0.9,1.35,1.2,1.2,1,1.2,1.35,1.2,1.2,1.2,0.9,1,1.2,1,0,0,0,0,0],
+         'Q, imposed or live action':[0,0,1.5,PsiC,PsiE,PsiC,0,1.5,1.5*PsiL,PsiC,0,PsiE,PsiC,0,PsiS,PsiL,0,0,0],
+         'W, wind action':[0,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0,1,0,0],
+         'E, earthquake action':[0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0],
+         'S, other actions':[0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1]
+        },
+        index = pd.MultiIndex.from_tuples(
+            [('ULS stability','stabilising permanent action only'),
+             ('ULS stability','destabilising permanent action only'),
+             ('ULS stability','permanent and imposed action'),
+             ('ULS stability','permanent, wind and imposed action'),
+             ('ULS stability','permanent, earthquake and imposed action'),
+             ('ULS stability','permanent, other actions and imposed action'),
+             ('ULS strength','permanent action only'),
+             ('ULS strength','permanent and imposed action'),
+             ('ULS strength','permanent and long term imposed action'),
+             ('ULS strength','permanent, wind and imposed action'),
+             ('ULS strength','permanent and wind action reversal'),
+             ('ULS strength','permanent, earthquake and imposed action'),
+             ('ULS strength','permanent, other actions and imposed action'),
+             ('SLS','permanent action only'),
+             ('SLS','short term imposed action only'),
+             ('SLS','long term imposed action only'),
+             ('SLS','wind action only'),
+             ('SLS','earthquake action only'),
+             ('SLS','other actions only'),
+             ])
+    )
+
+    return df2
+  
+action_combinations(action_type,action_character)
+
+"""#7.2.1 ULS stability confirmation method
+
+Given stabilising design actions, design capacity and destabilising actions, this function returns a unity number and whether compliance = true or false.
+
+$$E_{d,stb} + R_d \ge E_{d,dst}$$
+"""
+
+def uls_stability(stabilising_design_actions,design_capacity,destabilising_design_actions):
+
+  if stabilising_design_actions + design_capacity >= destabilising_design_actions: compliance = True
+  else: compliance = False
+
+  unity = (stabilising_design_actions + design_capacity) / destabilising_design_actions
+
+  return compliance,unity
+
+"""#7.2.2 ULS strength confirmation method
+
+Given design action effect and design capacity, this function returns a unity number and whether compliance = true or false.
+
+$$R_d \ge E_{d}$$
+"""
+
+def uls_strength(design_capacity,design_actions):
+
+  if design_capacity >= design_actions: compliance = True
+  else: compliance = False
+
+  unity = design_capacity / design_actions
+
+  return compliance,unity
+
+"""#7.3 SLS confirmation method
+
+Given a servicability parameter from design actions and a limiting servicability parameter, this function returns a unity number and whether compliance = true or false.
+
+$$\delta \le \delta_l$$
+"""
+
+def sls(servicability_parameter,servicability_limit):
+
+  if servicability_parameter <= servicability_limit: compliance = True
+  else: compliance = False
+
+  unity = servicability_parameter / servicability_limit
+
+  return compliance,unity
