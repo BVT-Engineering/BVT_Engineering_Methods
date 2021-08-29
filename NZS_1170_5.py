@@ -79,9 +79,7 @@ def spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method):
 
     return ChT
 
-spectral_shape_factor = spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method)
-
-print("Spectral shape factor =",spectral_shape_factor)
+spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method)
 
 """##3.1.4 Hazard factor, $Z$, and shortest major fault distance, $D$
 
