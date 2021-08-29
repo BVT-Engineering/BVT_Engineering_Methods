@@ -377,7 +377,7 @@ def part_risk_factor_limit_state(part_category,return_period_factor):
 
   return part_risk_factor, structure_limit_state
 
-part_risk_factor, structure_limit_state = part_risk_factor_limit_state(part_category,Ru)
+part_risk_factor, structure_limit_state = part_risk_factor_limit_state(part_category,return_period_factor)
 
 print('Part risk factor =',part_risk_factor)
 print('Structure limit state =',structure_limit_state)
