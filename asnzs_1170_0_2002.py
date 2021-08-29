@@ -26,6 +26,8 @@ import pandas as pd
 """#3.4 Annual Probability of Exceedance
 
 Given the Design working life and the Importance level, this function returns the Annual probability of exceedance for wind, snow and earthquake Ultimate limit states, and service limit states for SLS1 and SLS2, as given in Table 3.3.
+
+Note this function also includes SLS2 annual probabilities as given in NZS 1170.5, table 8.1, note 6.
 """
 
 #@title Table 3.3 - Annual probability of exceedence { vertical-output: true }
@@ -59,7 +61,7 @@ table3_3 = pd.DataFrame(
              ' ',' ',' ',' ',
              '-','-','-','1/250',
              '-','-','-','1/250',
-             '-','-','-','1/500',
+             '-','1/100','1/250','1/500',
              '-','-','-','*'],
  },
  index = pd.MultiIndex.from_tuples([('Construction equipment',2),
@@ -89,18 +91,21 @@ table3_3 = pd.DataFrame(
 
 table3_3
 
-#@title Annual probability of exceedance { run: "auto", vertical-output: true }
-Design_Working_Life = "25 years" #@param ["Construction equipment", "Less than 6 months", "5 years", "25 years", "50 years", "100 years or more"]
-Importance_Level = 3 #@param ["1", "2", "3", "4"] {type:"raw"}
-Limit_State = "Earthquake ULS" #@param ["Wind ULS", "Snow ULS", "Earthquake ULS", "SLS1", "SLS2"]
+#@title annual_probability_of_exceedence(Design_Working_Life,Importance_Level,Limit_State) { run: "auto", vertical-output: true }
+#@markdown Design Working Life:
+N = "25 years" #@param ["Construction equipment", "Less than 6 months", "5 years", "25 years", "50 years", "100 years or more"]
+#@markdown Importance Level:
+IL = 3 #@param ["1", "2", "3", "4"] {type:"raw"}
+#@markdown Limit State:
+LS = "Earthquake ULS" #@param ["Wind ULS", "Snow ULS", "Earthquake ULS", "SLS1", "SLS2"]
 
-def annual_probability_of_exceedence(Design_Working_Life,Importance_Level,Limit_State):
+def annual_probability_of_exceedence(N,IL,LS):
 
-    df1 = table3_3.loc[(Design_Working_Life, Importance_Level),Limit_State]
+    P = table3_3.loc[(N,IL),LS]
 
-    return df1
+    return P
   
-annual_probability_of_exceedence(Design_Working_Life,Importance_Level,Limit_State)
+print("P =",annual_probability_of_exceedence(N,IL,LS))
 
 """#Table 4.1 Combinations of Actions - Imposed load factors
 
@@ -133,7 +138,7 @@ table4_1 = pd.DataFrame(
 
 table4_1
 
-#@title Character of imposed action { run: "auto", vertical-output: true }
+#@title imposed_load_factors(action_type,action_character) { run: "auto", vertical-output: true }
 
 action_type = "Distributed imposed actions" #@param ["Distributed imposed actions", "Concentrated imposed actions"]
 distributed_action_character = "Storage floors" #@param ["Residential and domestic floors", "Office floors", "Parking floors", "Retail floors", "Storage floors", "Other floors", "Roofs used for floor type activities", "All other roofs"]
@@ -208,12 +213,12 @@ Given stabilising design actions, design capacity and destabilising actions, thi
 $$E_{d,stb} + R_d \ge E_{d,dst}$$
 """
 
-def uls_stability(stabilising_design_actions,design_capacity,destabilising_design_actions):
+def uls_stability(Edstb,Rd,Eddst):
 
-  if stabilising_design_actions + design_capacity >= destabilising_design_actions: compliance = True
+  if Edstb + Rd >= Eddst: compliance = True
   else: compliance = False
 
-  unity = (stabilising_design_actions + design_capacity) / destabilising_design_actions
+  unity = (Edstb + Rd) / Eddst
 
   return compliance,unity
 
@@ -224,12 +229,12 @@ Given design action effect and design capacity, this function returns a unity nu
 $$R_d \ge E_{d}$$
 """
 
-def uls_strength(design_capacity,design_actions):
+def uls_strength(Rd,Ed):
 
-  if design_capacity >= design_actions: compliance = True
+  if Rd >= Ed: compliance = True
   else: compliance = False
 
-  unity = design_capacity / design_actions
+  unity = Rd / Ed
 
   return compliance,unity
 
@@ -240,11 +245,11 @@ Given a servicability parameter from design actions and a limiting servicability
 $$\delta \le \delta_l$$
 """
 
-def sls(servicability_parameter,servicability_limit):
+def sls(delta,delta_l):
 
-  if servicability_parameter <= servicability_limit: compliance = True
+  if delta <= delta_l: compliance = True
   else: compliance = False
 
-  unity = servicability_parameter / servicability_limit
+  unity = delta / delta_l
 
   return compliance,unity
