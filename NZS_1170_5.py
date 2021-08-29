@@ -64,7 +64,7 @@ Subsoil_Type = "C Shallow soil" #@param ["A Strong rock and B rock", "C Shallow 
 Period_of_Vibration = 0 #@param {type:"number"}
 spectral_method = "modal, numerical, parts (table 3.2)" #@param ["General (table 3.1)", "modal, numerical, parts (table 3.2)"]
 
-def spectral_shape_factor_3(Subsoil_Type,Period_of_Vibration,spectral_method):
+def spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method):
 
     if spectral_method == "General (table 3.1)":
       table = table3_1
@@ -75,11 +75,11 @@ def spectral_shape_factor_3(Subsoil_Type,Period_of_Vibration,spectral_method):
     a = table.index.values
     b = table[Subsoil_Type].to_numpy()
     
-    spectral_shape_factor = np.interp(Period_of_Vibration, a, b)
+    ChT = np.interp(Period_of_Vibration, a, b)
 
-    return spectral_shape_factor
+    return ChT
 
-spectral_shape_factor = spectral_shape_factor_3(Subsoil_Type,Period_of_Vibration,spectral_method)
+spectral_shape_factor = spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method)
 
 print("Spectral shape factor =",spectral_shape_factor)
 
