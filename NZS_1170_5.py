@@ -61,10 +61,10 @@ table3_1_1.plot(table=True,figsize=(15, 10))
 
 #@title spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method) { run: "auto", vertical-output: true }
 Subsoil_Type = "C Shallow soil" #@param ["A Strong rock and B rock", "C Shallow soil", "D Deep or very soft soil", "E Very soft soil"]
-Period_of_Vibration = 0 #@param {type:"raw"}
+Period_of_Vibration = 0 #@param {type:"number"}
 spectral_method = "modal, numerical, parts (table 3.2)" #@param ["General (table 3.1)", "modal, numerical, parts (table 3.2)"]
 
-def spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method):
+def spectral_shape_factor_3(Subsoil_Type,Period_of_Vibration,spectral_method):
 
     if spectral_method == "General (table 3.1)":
       table = table3_1
@@ -79,7 +79,7 @@ def spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method):
 
     return spectral_shape_factor
 
-spectral_shape_factor = spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method)
+spectral_shape_factor = spectral_shape_factor_3(Subsoil_Type,Period_of_Vibration,spectral_method)
 
 print("Spectral shape factor =",spectral_shape_factor)
 
