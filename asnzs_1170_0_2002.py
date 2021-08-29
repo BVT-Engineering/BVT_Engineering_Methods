@@ -25,7 +25,7 @@ import pandas as pd
 
 """#3.4 Annual Probability of Exceedance
 
-Given the Design working life and the Importance level, this function returns the Annual probability of exceedance for wind, snow and earthquake Ultimate limit states, and service limit states for SLS1 and SLS2, as given in Table 3.3.
+Given the design working life, $N$, and the importance level, $IL$, this function returns the annual probability of exceedance,$P$ , for wind, snow and earthquake Ultimate limit states, and service limit states for SLS1 and SLS2, as given in Table 3.3.
 
 Note this function also includes SLS2 annual probabilities as given in NZS 1170.5, table 8.1, note 6.
 """
@@ -91,7 +91,7 @@ table3_3 = pd.DataFrame(
 
 table3_3
 
-#@title annual_probability_of_exceedence(Design_Working_Life,Importance_Level,Limit_State) { run: "auto", vertical-output: true }
+#@title annual_probability_of_exceedence(N,IL,LS) { run: "auto", vertical-output: true }
 #@markdown Design Working Life:
 N = "25 years" #@param ["Construction equipment", "Less than 6 months", "5 years", "25 years", "50 years", "100 years or more"]
 #@markdown Importance Level:
