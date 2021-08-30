@@ -452,7 +452,7 @@ def part_design_response_coefficient(Subsoil_Type,Z,R,N_TD,C_Hi,CiTp):
 
   return CpTp 
 
-CpTp = part_design_response_coefficient(Z,R,N_TD,C_Hi,CiTp)
+CpTp = part_design_response_coefficient(Subsoil_Type,Z,R,N_TD,C_Hi,CiTp)
 
 print ("Part design response coefficient =",CpTp)
 
