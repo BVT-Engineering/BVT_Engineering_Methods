@@ -1,8 +1,8 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="BVT_Engineering_Methods",
     version="0.5dev",
-    py_modules=["nzs_1170_5", "asnzs_1170_0_2002"],
+    packages=find_packages(),
     install_requires=["numpy", "pandas"],
 )
