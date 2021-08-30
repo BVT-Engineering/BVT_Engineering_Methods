@@ -59,12 +59,15 @@ table3_1_1 = pd.DataFrame(
 
 table3_1_1.plot(table=True,figsize=(15, 10))
 
-#@title spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method) { run: "auto", vertical-output: true }
+#@title spectral_shape_factor(Subsoil_Type,T,spectral_method) { run: "auto", vertical-output: true }
+#@markdown Subsoil Type
 Subsoil_Type = "C Shallow soil" #@param ["A Strong rock and B rock", "C Shallow soil", "D Deep or very soft soil", "E Very soft soil"]
-Period_of_Vibration = 0 #@param {type:"number"}
+#@markdown Period of Vibration
+T = 0 #@param {type:"number"}
+#@markdown Spectral method
 spectral_method = "modal, numerical, parts (table 3.2)" #@param ["General (table 3.1)", "modal, numerical, parts (table 3.2)"]
 
-def spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method):
+def spectral_shape_factor(Subsoil_Type,T,spectral_method):
 
     if spectral_method == "General (table 3.1)":
       table = table3_1
@@ -75,11 +78,12 @@ def spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method):
     a = table.index.values
     b = table[Subsoil_Type].to_numpy()
     
-    ChT = np.interp(Period_of_Vibration, a, b)
+    ChT = np.interp(T, a, b)
 
     return ChT
 
-spectral_shape_factor = spectral_shape_factor(Subsoil_Type,Period_of_Vibration,spectral_method)
+ChT = spectral_shape_factor(Subsoil_Type,T,spectral_method)
+print("Spectral shape factor =",ChT)
 
 """##3.1.4 Hazard factor, $Z$, and shortest major fault distance, $D$
 
@@ -235,10 +239,10 @@ def hazard_factor(location):
 
     return Z,D
 
-hazard_factor,major_fault_distance = hazard_factor(location)
+Z,D = hazard_factor(location)
 
-print("Hazard factor =",hazard_factor)
-print("Major fault distance =",major_fault_distance)
+print("Hazard factor =",Z)
+print("Major fault distance =",D)
 
 """##3.1.5 Return period factor $R$
 
@@ -254,18 +258,19 @@ table3_5 = pd.DataFrame(
 
 table3_5
 
-#@title return_period_factor(annual_probability_of_exceedance) { run: "auto", vertical-output: true }
-annual_probability_of_exceedance = "1/500" #@param ['1/2500','1/2000','1/1000','1/500','1/250','1/100','1/50','1/25','1/20']
+#@title return_period_factor(P) { run: "auto", vertical-output: true }
+#@markdown Annual Probability of Exceedance:
+P = "1/500" #@param ['1/2500','1/2000','1/1000','1/500','1/250','1/100','1/50','1/25','1/20']
 
-def return_period_factor(annual_probability_of_exceedance):
+def return_period_factor(P):
 
-  return_period_factor = table3_5.loc[table3_5["Required annual probability of exceedance"]==annual_probability_of_exceedance,"Rs or Ru"].squeeze()
+  R = table3_5.loc[table3_5["Required annual probability of exceedance"]==P,"Rs or Ru"].squeeze()
 
-  return return_period_factor
+  return R
 
-return_period_factor = return_period_factor(annual_probability_of_exceedance)
+R = return_period_factor(P)
 
-print("Return period factor =", return_period_factor)
+print("Return period factor =",return_period_factor(P))
 
 """##3.1.6 Near fault factor, $N(T,D)$, modal, numerical integration and parts
 
@@ -281,11 +286,7 @@ table3_7 = pd.DataFrame(
 
 table3_7
 
-def near_fault_factor(annual_probability_of_exceedance,major_fault_distance,Period_of_Vibration):
-
-      a = annual_probability_of_exceedance
-
-      T = Period_of_Vibration
+def near_fault_factor(P,D,T):
 
     #Find Nmax(T) from table 3.7
 
@@ -301,21 +302,21 @@ def near_fault_factor(annual_probability_of_exceedance,major_fault_distance,Peri
     
     #Find N(T,D) from clauses 3.1.6.1 and 3.1.6.2
       
-      if a in ['1/25','1/50','1/100','1/150','1/250'] :
-          N = 1.0
-      elif major_fault_distance >= 20 :
-          N = 1.0
-      elif major_fault_distance > 2 :
-          N = 1 + (N_max - 1)*((20 - major_fault_distance )/18)
-      elif major_fault_distance <= 2 :
-          N = N_max
-      else: N = 1.0
+      if P in ['1/25','1/50','1/100','1/150','1/250'] :
+          N_TD = 1.0
+      elif D >= 20 :
+          N_TD = 1.0
+      elif D > 2 :
+          N_TD = 1 + (N_max - 1)*((20 - D )/18)
+      elif D <= 2 :
+          N_TD = N_max
+      else: N_TD = 1.0
 
-      return N
+      return N_TD
 
-near_fault_factor = near_fault_factor(annual_probability_of_exceedance,major_fault_distance,Period_of_Vibration)
+N_TD = near_fault_factor(P,D,T)
 
-print("Near fault factor =",near_fault_factor)
+print("Near fault factor =",N_TD)
 
 """##3.1.1 Elastic site spectra $C(T)$
 Given the spectral shape factor, $C_h(T)$, the hazard factor, $Z$, the return period factor, $R$, and the near fault factor, $N(T,D)$, this function returns the elastic site hazard spectra, $C(T)$, also refered to as the site hazard coefficient.
@@ -323,22 +324,22 @@ Given the spectral shape factor, $C_h(T)$, the hazard factor, $Z$, the return pe
 $$C(T)=C_h(T)* Z* R* N(T,D)$$
 """
 
-def elastic_site_spectra(spectral_shape_factor,hazard_factor,return_period_factor,near_fault_factor):
+def elastic_site_spectra(ChT,Z,R,N_TD):
 
   #as per clause 3.1.1, check Z*Ru is not greater than 0.7. If Z*Ru is greater than 0.7, Z*Ru will be set to 0.7
 
-  if hazard_factor*return_period_factor > 0.7:
+  if Z*R > 0.7:
     ZRu = 0.7
   else:
-    ZRu = hazard_factor*return_period_factor
+    ZRu = Z*R
   
-  elastic_site_spectra = spectral_shape_factor * ZRu * near_fault_factor
+  CT = ChT * ZRu * N_TD
 
-  return elastic_site_spectra
+  return CT
 
-elastic_site_spectra = elastic_site_spectra(spectral_shape_factor,hazard_factor,return_period_factor,near_fault_factor)
+CT = elastic_site_spectra(ChT,Z,R,N_TD)
 
-print("Elastic site spectra =",elastic_site_spectra)
+print("Elastic site spectra =",CT)
 
 """#8 Parts
 
@@ -346,7 +347,7 @@ This section is data, methods and functions for determining actions on parts of 
 
 ##8.1.2 Classification of parts and components
 
-Given a part category and a return period factor, this function returns the Part risk factor, $R_p$, and the Structure limit state.
+Given a part category and a return period factor, this function returns the Part risk factor, $R_p$, and the part limit state, $pLS$.
 
 A value for $R_u$, the return period factor, is required for calculation of the P.6 part risk factor. It is ignored in the function for all other part categories.
 """
@@ -364,49 +365,51 @@ table8_1
 #@title part_risk_factor_limit_state(part_category,return_period_factor)) { run: "auto", vertical-output: true }
 part_category = "P2/P3" #@param ["P1","P2/P3","P4","P5","P6","P7"]
 
-def part_risk_factor_limit_state(part_category,return_period_factor):
+def part_risk_factor_limit_state(part_category,R):
 
-  part_risk_factor = table8_1.loc[table8_1["Category"]==part_category,"Part risk factor Rp"].squeeze()
-  structure_limit_state = table8_1.loc[table8_1["Category"]==part_category,"Structure limit state"].squeeze()
+  Rp = table8_1.loc[table8_1["Category"]==part_category,"Part risk factor Rp"].squeeze()
+  pLS = table8_1.loc[table8_1["Category"]==part_category,"Structure limit state"].squeeze()
 
 #check if part category is P6
   if part_category == "P6":
-    part_risk_factor = part_risk_factor * return_period_factor
+    Rp = Rp * R
 
-  return part_risk_factor, structure_limit_state
+  return Rp, pLS
 
-part_risk_factor, structure_limit_state = part_risk_factor_limit_state(part_category,return_period_factor)
+Rp, pLS = part_risk_factor_limit_state(part_category,R)
 
-print('Part risk factor =',part_risk_factor)
-print('Structure limit state =',structure_limit_state)
+print('Part risk factor =',Rp)
+print('Part limit state =',pLS)
 
 """## 8.3 Floor height coefficient, $C_{Hi}$
 
 Given the height of the part attachment in the building, $h_i$, and the total height of the building, $h_n$, this function returns the floor height coefficient, $C_{Hi}$.
 """
 
-#@title floor_height_coefficient(part_height,building_height) { run: "auto" }
-part_height =  25#@param {type:"number"}
-building_height =  50#@param {type:"number"}
+#@title floor_height_coefficient(h_i,h_n) { run: "auto" }
+#@markdown Height of part attachment:
+h_i =  25#@param {type:"number"}
+#@markdown Total height of building:
+h_n =  50#@param {type:"number"}
 
-def floor_height__coefficient(part_height,building_height):
+def floor_height__coefficient(h_i,h_n):
   
-  if part_height < 12 :
-      floor_height__coefficient = (1+part_height/6)
-  if part_height < 0.2*building_height:
-    if (1+part_height/6) > (1+10*(part_height/building_height)):
-      floor_height__coefficient = (1+10*(part_height/building_height))
+  if h_i < 12 :
+      C_Hi = (h_i/6)
+  if h_i < 0.2*h_n:
+    if (1+h_i/6) > (1+10*(h_i/h_n)):
+      C_Hi = (1+10*(h_i/h_n))
     else:
-      floor_height__coefficient = (1+part_height/6)
+      C_Hi = (1+h_i/6)
 
-  if part_height >= 0.2*building_height:
-      floor_height__coefficient = 3.0
+  if h_i >= 0.2*h_n:
+      C_Hi = 3.0
 
-  return floor_height__coefficient
+  return C_Hi
 
-floor_height__coefficient = floor_height__coefficient(part_height,building_height)
+C_Hi = floor_height__coefficient(h_i,h_n)
   
-print("Floor height coefficient =",floor_height__coefficient)
+print("Floor height coefficient =",C_Hi)
 
 """## 8.4 Part or component spectral shape coefficient, $C_i(T_p)$
 
@@ -414,39 +417,44 @@ Given the part period of vibration, $T_p$, this function returns the part or com
 """
 
 #@title { run: "auto" }
-part_period_of_vibration = 0 #@param {type:"number"}
+#@markdown Part period of vibration, seconds:
+Tp = 0 #@param {type:"number"}
 
-def part_spectral_shape_factor(part_period_of_vibration):
+def part_spectral_shape_factor(Tp):
 
-  if part_period_of_vibration <= 0.75:
-    part_spectral_shape_factor = 2.0
-  elif part_period_of_vibration >= 1.5:
-    part_spectral_shape_factor = 0.5
+  if Tp <= 0.75:
+    CiTp = 2.0
+  elif Tp >= 1.5:
+    CiTp = 0.5
   else:
-    part_spectral_shape_factor = 2*(1.75-part_period_of_vibration)
+    CiTp = 2*(1.75-Tp)
 
-  return part_spectral_shape_factor
+  return CiTp
 
-part_spectral_shape_factor = part_spectral_shape_factor(part_period_of_vibration)
+CiTp = part_spectral_shape_factor(Tp)
 
-print("Part spectral shape factor =",part_spectral_shape_factor)
+print("Part spectral shape factor =",CiTp)
 
-"""## 8.2 Design response coefficient for parts and components
+"""## 8.2 Design response coefficient for parts and components, $C_p(T_p)$
 
-Given the site hazard coefficient, $C(0)$, the floor height coefficient, $C_{Hi}$ and the part spectral shape coefficient, $C_i(T_p)$, this function returns $C_p(T_p)$, the part or component design response coefficient.
+Given the hazard factor, $Z$, the return period factor, $R$, and the near fault factor, $N(T,D)$, for the site, and the floor height coefficient, $C_{Hi}$, and the part spectral shape coefficient, $C_i(T_p)$, this function returns $C_p(T_p)$, the part or component design response coefficient. 
+
+Site hazard coefficient, $C(0)$ is the elastic site spectra for the site, $C(T)$, set for a period, $T$, of 0 seconds.
 
 $$C_p(T_p) = C(0)C_{Hi}C_i(T_p)$$
 """
 
-def part_design_response_coefficient(elastic_site_spectra,floor_height__coefficient,part_spectral_shape_factor):
+def part_design_response_coefficient(Subsoil_Type,Z,R,N_TD,C_Hi,CiTp):
   
-  part_design_response_coefficient = elastic_site_spectra * floor_height__coefficient * part_spectral_shape_factor
+  C_0 = elastic_site_spectra(spectral_shape_factor(Subsoil_Type,0,"modal, numerical, parts (table 3.2)"),Z,R,N_TD)
 
-  return part_design_response_coefficient 
+  CpTp = C_0 * C_Hi * CiTp
 
-part_design_response_coefficient = part_design_response_coefficient(elastic_site_spectra,floor_height__coefficient,part_spectral_shape_factor)
+  return CpTp 
 
-print ("Part design response coefficient =",part_design_response_coefficient)
+CpTp = part_design_response_coefficient(Z,R,N_TD,C_Hi,CiTp)
+
+print ("Part design response coefficient =",CpTp)
 
 """##8.6 Part or component response factor, $C_{ph}$
 
@@ -463,27 +471,28 @@ table8_2
 part_ductility = 1 #@param [1.0,1.25,2.0,3.0] {type:"
 
 def part_response_factor(part_ductility):
-  part_response_factor = table8_2.loc[table8_2["Ductility of the part, Mu_p"]==part_ductility,"Cph and Cpv"].squeeze()
-  return part_response_factor
+  Cph = table8_2.loc[table8_2["Ductility of the part, Mu_p"]==part_ductility,"Cph and Cpv"].squeeze()
+  return Cph
 
-part_response_factor = part_response_factor(part_ductility)
-print("Part response factor =",part_response_factor)
+Cph = part_response_factor(part_ductility)
+print("Part response factor =",Cph)
 
-"""##8.5.1 Horizontal design actions
+"""##8.5.1 Horizontal design actions, $F_{ph}$
 
 Given the horizontal design coefficient, $C_p(T_p)$, the part horizontal response factor, $C_{ph}$, the part risk factor, $R_p$ and the part weight, $W_p$ (in N), this function returns the horizontal design action on a part, $F_{ph}$.
 
 $$F_{ph}=C_p(T_p) * C_{ph} * R_p * W_p$$
 """
 
-part_weight = 42.08 #@param {type:"number"}
+#@markdown Part weight, N:
+Wp = 42.08 #@param {type:"number"}
 
-def part_horizontal_design_action(part_design_response_coefficient,part_response_factor,part_risk_factor,part_weight):
+def part_horizontal_design_action(CpTp,Cph,Rp,Wp):
 
-  part_horizontal_design_action = part_design_response_coefficient * part_response_factor * part_risk_factor * part_weight
+  Fph = CpTp * Cph * Rp * Wp
 
-  return part_horizontal_design_action
+  return Fph
 
-part_horizontal_design_action = part_horizontal_design_action(part_design_response_coefficient,part_response_factor,part_risk_factor,part_weight)
+Fph = part_horizontal_design_action(CpTp,Cph,Rp,Wp)
 
-print("Part horizontal design action =",part_horizontal_design_action)
+print("Part horizontal design action =",Fph)
