@@ -350,6 +350,8 @@ This section is data, methods and functions for determining actions on parts of 
 Given a part category and a return period factor, this function returns the Part risk factor, $R_p$, and the part limit state, $pLS$.
 
 A value for $R_u$, the return period factor, is required for calculation of the P.6 part risk factor. It is ignored in the function for all other part categories.
+
+*Note that this function returns ULS as "Earthquake ULS", so that functions in AS/NZS 1170.0 can be referenced.*
 """
 
 #@title Table 8.1 { vertical-output: true }
@@ -357,7 +359,7 @@ A value for $R_u$, the return period factor, is required for calculation of the 
 table8_1 = pd.DataFrame(
     {"Category":["P1","P2/P3","P4","P5","P6","P7"],
      "Part risk factor Rp":[1.0,1.0,1.0,1.0,2.0,1.0],
-     "Structure limit state":['ULS','ULS','ULS','SLS2','SLS1','SLS1']}
+     "Structure limit state":['Earthquake ULS','Earthquake ULS','Earthquake ULS','SLS2','SLS1','SLS1']}
 )
 
 table8_1
