@@ -23,7 +23,7 @@ Reviewed -
 
 import pandas as pd
 
-"""#3.4 Annual Probability of Exceedance
+"""#3.4 Annual Probability of Exceedance, $P$
 
 Given the design working life, $N$, and the importance level, $IL$, this function returns the annual probability of exceedance,$P$ , for wind, snow and earthquake Ultimate limit states, and service limit states for SLS1 and SLS2, as given in Table 3.3.
 
@@ -218,7 +218,7 @@ def uls_stability(Edstb,Rd,Eddst):
   if Edstb + Rd >= Eddst: compliance = True
   else: compliance = False
 
-  unity = (Edstb + Rd) / Eddst
+  unity = Eddst / (Edstb + Rd)
 
   return compliance,unity
 
@@ -234,7 +234,7 @@ def uls_strength(Rd,Ed):
   if Rd >= Ed: compliance = True
   else: compliance = False
 
-  unity = Rd / Ed
+  unity = Ed / Rd
 
   return compliance,unity
 
