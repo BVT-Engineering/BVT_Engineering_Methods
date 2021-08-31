@@ -63,7 +63,7 @@ table3_1_1.plot(table=True,figsize=(15, 10))
 #@markdown Subsoil Type
 Subsoil_Type = "C Shallow soil" #@param ["A Strong rock and B rock", "C Shallow soil", "D Deep or very soft soil", "E Very soft soil"]
 #@markdown Period of Vibration
-T = 0 #@param {type:"number"}
+T = 0.65 #@param {type:"number"}
 #@markdown Spectral method
 spectral_method = "modal, numerical, parts (table 3.2)" #@param ["General (table 3.1)", "modal, numerical, parts (table 3.2)"]
 
@@ -146,7 +146,7 @@ table3_3 = pd.DataFrame([
 ['Morrinsville',0.18,20],
 ['Mosgiel',0.13,20],
 ['Motueka',0.26,20],
-['Mount Manunganui',0.2,20],
+['Mount Maunganui',0.2,20],
 ['Mt Cook',0.38,20],
 ['Murchison',0.34,20],
 ['Murupara',0.3,20],
@@ -347,9 +347,9 @@ This section is data, methods and functions for determining actions on parts of 
 
 ##8.1.2 Classification of parts and components
 
-Given a part category and a return period factor, this function returns the Part risk factor, $R_p$, and the part limit state, $pLS$.
+Given a part category and a return period factor, this function returns the Part risk factor, $R_p$, and the applicable structure limit state for the part category, $pLS$.
 
-A value for $R_u$, the return period factor, is required for calculation of the P.6 part risk factor. It is ignored in the function for all other part categories.
+Table 8.1 sets the part risk factor for P.6 as $R_p*R_u$. For simplicity, this function returns $R_p$ only and the $Ru$ multiplier is added into the calculation for $F_ph$, the horizontal design action if the part category is P.6.
 
 *Note that this function returns ULS as "Earthquake ULS", so that functions in AS/NZS 1170.0 can be referenced.*
 """
@@ -367,18 +367,14 @@ table8_1
 #@title part_risk_factor_limit_state(part_category,return_period_factor)) { run: "auto", vertical-output: true }
 part_category = "P2/P3" #@param ["P1","P2/P3","P4","P5","P6","P7"]
 
-def part_risk_factor_limit_state(part_category,R):
+def part_risk_factor_limit_state(part_category):
 
   Rp = table8_1.loc[table8_1["Category"]==part_category,"Part risk factor Rp"].squeeze()
   pLS = table8_1.loc[table8_1["Category"]==part_category,"Structure limit state"].squeeze()
 
-#check if part category is P6
-  if part_category == "P6":
-    Rp = Rp * R
-
   return Rp, pLS
 
-Rp, pLS = part_risk_factor_limit_state(part_category,R)
+Rp, pLS = part_risk_factor_limit_state(part_category)
 
 print('Part risk factor =',Rp)
 print('Part limit state =',pLS)
@@ -439,7 +435,7 @@ print("Part spectral shape factor =",CiTp)
 
 """## 8.2 Design response coefficient for parts and components, $C_p(T_p)$
 
-Given the hazard factor, $Z$, the return period factor, $R$, and the near fault factor, $N(T,D)$, for the site, and the floor height coefficient, $C_{Hi}$, and the part spectral shape coefficient, $C_i(T_p)$, this function returns $C_p(T_p)$, the part or component design response coefficient. 
+Given the hazard factor, $Z$, the  return period factor, $R$, and the near fault factor, $N(T,D)$, for the site, and the floor height coefficient, $C_{Hi}$, and the part spectral shape coefficient, $C_i(T_p)$, this function returns $C_p(T_p)$, the part or component design response coefficient. 
 
 Site hazard coefficient, $C(0)$ is the elastic site spectra for the site, $C(T)$, set for a period, $T$, of 0 seconds.
 
@@ -447,12 +443,14 @@ $$C_p(T_p) = C(0)C_{Hi}C_i(T_p)$$
 """
 
 def part_design_response_coefficient(Subsoil_Type,Z,R,N_TD,C_Hi,CiTp):
-  
+
   C_0 = elastic_site_spectra(spectral_shape_factor(Subsoil_Type,0,"modal, numerical, parts (table 3.2)"),Z,R,N_TD)
 
   CpTp = C_0 * C_Hi * CiTp
 
   return CpTp 
+
+#For test, note that P in section 3.1.5 needs to be set to match the correct value for the limit state as defined in 8.2.1
 
 CpTp = part_design_response_coefficient(Subsoil_Type,Z,R,N_TD,C_Hi,CiTp)
 
@@ -487,14 +485,18 @@ $$F_{ph}=C_p(T_p) * C_{ph} * R_p * W_p$$
 """
 
 #@markdown Part weight, N:
-Wp = 42.08 #@param {type:"number"}
+Wp = 500 #@param {type:"number"}
 
-def part_horizontal_design_action(CpTp,Cph,Rp,Wp):
+def part_horizontal_design_action(CpTp,Cph,Rp,Wp,part_category,R):
+
+#check if part category is P6, add modifier for Rp if required
+  if part_category == "P6":
+    Rp = Rp * R
 
   Fph = CpTp * Cph * Rp * Wp
 
   return Fph
 
-Fph = part_horizontal_design_action(CpTp,Cph,Rp,Wp)
+Fph = part_horizontal_design_action(CpTp,Cph,Rp,Wp,part_category,R)
 
 print("Part horizontal design action =",Fph)
