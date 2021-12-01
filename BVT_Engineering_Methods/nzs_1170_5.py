@@ -187,7 +187,7 @@ table3_3 = pd.DataFrame([
 ['Taumaranui',0.21,20],
 ['Taupo',0.28,20],
 ['Tauranga',0.2,20],
-['Te Anua',0.36,20],
+['Te Anau',0.36,20],
 ['Te Aroha',0.18,20],
 ['Te Awamutu',0.17,20],
 ['Te Kuiti',0.18,20],
