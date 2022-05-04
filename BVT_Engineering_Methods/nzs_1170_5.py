@@ -454,7 +454,7 @@ $
 For the purposes of calculating kμ, for all site subsoil classes T1 shall not be taken less than 0.4 s.
 """
 
-def CdT(CT,T,Sp,mu,Subsoil_Type,Z,Ru):
+def horizontal_design_action(CT,T,Sp,mu,Subsoil_Type,Z,Ru):
   T = max(T, 0.4)
   
   # calculate k_mu
