@@ -478,8 +478,8 @@ def horizontal_design_action(CT,T,Sp,mu,Subsoil_Type,Z,Ru):
   
   return CdT
 
-CdT = CdT(CT,T,Sp_ULS,mu_ULS,Subsoil_Type,Z,R)
-print(CdT)
+CdT_ULS = horizontal_design_action(CT,T,Sp_ULS,mu_ULS,Subsoil_Type,Z,R)
+print(CdT_ULS)
 
 """#8 Parts
 
