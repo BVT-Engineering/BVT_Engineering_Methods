@@ -65,7 +65,7 @@ otherwise $l_e=L$
 def post_le_across_aisle_GNA(bottom_brace_height, brace_pitch, is_below_second_brace_node, is_bracing_eccentricity_low, is_floor_concrete, is_baseplate_fitted):
   if is_floor_concrete is True and is_baseplate_fitted is True and is_bracing_eccentricity_low is True:
     # alternative (a) applies
-    if below_second_brace_node = True
+    if below_second_brace_node is True:
       le = 0.9*(bottom_brace_height+2*brace_pitch)
     elif ((bracing_pattern is 'K' and num_X_braces > 0) or bracing_pattern is 'Z') and height_from_floor <= bottom_brace_height+brace_pitch:
       le = 0.9*(bottom_brace_height+brace_pitch)
@@ -82,7 +82,7 @@ def brace_le_across_aisle_GNA(brace_welds_longer_than_20mm, brace_length):
     le = 0.9*brace_length
   else:
     le = brace_length
-
+  
   return le
 
 """#### 4.2.2.5 Effective length for torsional buckling of uprights
@@ -95,4 +95,5 @@ The input, brace sapcing, is the distance between brace nodes for the part of th
 """
 
 def post_le_torsional(brace_spacing):
-    le = brace_spacing
+  le = brace_spacing
+  return le
