@@ -62,17 +62,17 @@ otherwise $l_e=L$
 
 """
 
-def post_le_across_aisle_GNA(bottom_brace_height, brace_pitch, is_below_second_brace_node, is_bracing_eccentricity_low, is_floor_concrete, is_baseplate_fitted):
+def post_le_across_aisle_GNA(bottom_brace_height, brace_spacing, is_below_second_brace_node, is_bracing_eccentricity_low, is_floor_concrete, is_baseplate_fitted):
   if is_floor_concrete is True and is_baseplate_fitted is True and is_bracing_eccentricity_low is True:
     # alternative (a) applies
-    if below_second_brace_node is True:
-      le = 0.9*(bottom_brace_height+2*brace_pitch)
-    elif ((bracing_pattern is 'K' and num_X_braces > 0) or bracing_pattern is 'Z') and height_from_floor <= bottom_brace_height+brace_pitch:
-      le = 0.9*(bottom_brace_height+brace_pitch)
+    if is_below_second_brace_node is True:
+      le = 0.9*(bottom_brace_height+brace_spacing)
+    else: 
+      le = brace_spacing
   
   else:
     # alternative (b) applies
-    le = brace_pitch
+    le = brace_spacing
 
   return le
 
