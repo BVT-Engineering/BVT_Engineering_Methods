@@ -62,10 +62,10 @@ otherwise $l_e=L$
 
 """
 
-def post_le_across_aisle_GNA(height_from_floor,bottom_brace_height, brace_pitch, num_X_braces,bracing_pattern, brace_length, is_bracing_eccentricity_low, is_floor_concrete, is_baseplate_fitted):
+def post_le_across_aisle_GNA(bottom_brace_height, brace_pitch, is_below_second_brace_node, is_bracing_eccentricity_low, is_floor_concrete, is_baseplate_fitted):
   if is_floor_concrete is True and is_baseplate_fitted is True and is_bracing_eccentricity_low is True:
     # alternative (a) applies
-    if bracing_pattern is 'K' and num_X_braces is 0 and height_from_floor <= bottom_brace_height+2*brace_pitch:
+    if below_second_brace_node = True
       le = 0.9*(bottom_brace_height+2*brace_pitch)
     elif ((bracing_pattern is 'K' and num_X_braces > 0) or bracing_pattern is 'Z') and height_from_floor <= bottom_brace_height+brace_pitch:
       le = 0.9*(bottom_brace_height+brace_pitch)
@@ -91,13 +91,8 @@ Only alternative (a) is considered.
 
 Alternative (b) allows for the torsional buckling length of posts to be halved where braces provide full torsional and warping restraint. This condition does not apply to most racks with bolted braces, but will apply to some racks with welded braces. This is disregarded for conservativeness and simplicity.
 
-For X braced frames, or K braced frames at locations that are X braced, $l_e =brace pitch$.
-
-For K braced frames at heights above X bracing, $l_e =2*brace pitch$
+The input, brace sapcing, is the distance between brace nodes for the part of the post in question.
 """
 
-def post_le_torsional(height_from_floor, bottom_brace_height,brace_pitch,num_X_braces,bracing_pattern):
-  if bracing_pattern is 'Z' or height_from_floor <= bottom_brace_height+num_X_braces*brace_pitch:
-    le = brace_pitch
-  else:
-    le = 2*brace_pitch
+def post_le_torsional(brace_spacing):
+    le = brace_spacing
