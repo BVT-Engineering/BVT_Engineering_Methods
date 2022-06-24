@@ -352,7 +352,7 @@ def nominal_section_tension_capacity(section_properties,kt=0.75):
   
   # get net area by taking gross area (non-holed sections) or holed net area (holed sections) and subtracting the fastener hole diameter if applicable
   if section_properties['hole sections']['holes present?'] is True:
-    An1 = section_properties['hole sections']['holes present?']['A,net']
+    An1 = section_properties['hole sections']['A,net']
   else:
     An1 = Ag
 
