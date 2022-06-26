@@ -592,8 +592,13 @@ def critical_bending_moment_lateral(section_properties, member_properties):
   M_yield = yield_bending_moment(section_properties,axis)
 
   # calculate slenderness ratio using eq 3.3.3.2.1(6)
-  lambda_b = (M_yield/M_o)**0.5
 
+  try:
+    lambda_b = (M_yield/M_o)**0.5
+  except:
+    print(f' Mo = {M_o}') 
+    print(f' member_properties = {member_properties}') 
+      
   if lambda_b <= 0.6:
     M_c = M_yield
   elif lambda_b < 1.336:
