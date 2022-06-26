@@ -56,6 +56,130 @@ import pandas as pd
 import numpy as np
 import math
 
+"""# Section, member, connection properties dictionary for testing
+Input section and member properties dictionaries here to use for testing
+"""
+
+## TEST
+# print(f'Compression unity = {compression_unity(section_properties,member_properties)}')
+# print(f'Bending unity x = {bending_unity(section_properties,member_properties,"x")}')
+# print(f'Bending unity y = {bending_unity(section_properties,member_properties,"y")}')
+
+# 100x67x2.0 post section properties. In this case X is used for the minor axis
+section_properties = {
+    'Zx': 6595.5001,
+    'Zy': 1.40137e4,
+    'Zex': 6247.4937,
+    'Zey': 1.32149e4	,
+    'Ix': 2.91297e5,
+    'Iy': 7.14700e5,
+    'J' : 712.071,
+    'Iw': 1.14391e9,
+    'symmetry axes': 'y',
+    'Af': 541.6281,
+    't' : 2,
+    'Ae': 494,
+    'x0': 0,
+    'y0': -58.3515,
+    'beta_y': 123.3769,		
+    'E' : 200e3,
+    'G' : 80e3,
+    'fy': 345,
+    'fu': 470,
+    'hole sections': {
+        'holes present?': True,
+        'Ix,net': 2.61527e5	,
+        'Iy,net': 6.73961e5	,
+        'Zx,net': 6247.4937,
+        'Zy,net': 1.32149e4,
+        'J,net' : 645,
+        'Iw,net': 5.2e8,
+        'A,net' : 494,
+        'x0,net': 0,
+        'y0,net': -62.7428,
+        'hole length': 25,
+        'hole spacing': 76,
+        },
+      'is subject to distortional buckling?': True,
+      'fod' : {'section_type':'general channel',
+               'fod_x':574,
+               'fod_y':675,
+               'fod_c':319, 
+               'general_channel_properties':{'A'  : 0,
+                                             'J'  : 0,
+                                             'Ix' : 0,
+                                             'Iy' : 0,
+                                             'Ixy': 0,
+                                             'Iw' : 0,
+                                             'x0' : 0,
+                                             'y0' : 0,
+                                             'hx' : 0,
+                                             'hy' : 0,
+                                             'bw' : 0 
+                                            },
+               'simple_lipped_channel_properties':{'bf': 0,
+                                                   'bw': 0,
+                                                   't' : 0,
+                                                   'dl': 0
+                                                   }
+               },
+      'is cylinder?': False,
+      'bolt hole diameter': 4*14
+}
+
+print(section_properties)
+
+# 100x67x2.0 post section - typical values entered
+member_properties = {
+    'Mx' : 2.97e6,
+    'My' : 4.29e6,
+    'N'  : -52.8e3,
+    'Vx' : 0,
+    'Vy' : 5000,
+    'lex' : 1800,
+    'ley' : 1800,
+    'lez' : 1800,
+    'cantilevered?': False
+}
+
+print(member_properties)
+
+# typ M10 bolt to 1.8 mm brace and 2.0 mm posts entered
+connection_properties = {
+    'connection type' : 'bolted',
+    'connection size' : 10,
+    'washer diameter' : 16,
+    'washer thickness': 2,
+    't1' : 1.8,
+    'fy1': 350,
+    'fu1': 470,
+    'e1': 19,
+    'w1': 36,
+    'An1': (36 + 2*24 - 12)*1.8,
+    'alpha1': 0.75,
+    't2' : 2,
+    'fy2': 350,
+    'fu2': 470,
+    'e2' : 20,
+    'w2' : 67,
+    'An2': section_properties['hole sections']['A,net']-12*2,
+    'alpha2': 0.75,
+    'spacing' : None,
+    'V' : 11200,
+    'Nt' : 0
+}
+
+print(connection_properties)
+
+section_properties['bolt hole diameter']
+
+"""# Axis setter
+
+Information is input based on section x and y axis. This function converts values to major or minor axis, allowing sections to be input in any rotation.
+
+Major axis is taken as the one with the highest stiffness (highest $I$ value)
+"""
+
 def axis_setter(section_properties):
   if section_properties['Ix'] >= section_properties['Iy']:
     section_properties['major_axis'] = 'x'
@@ -468,7 +592,6 @@ def critical_bending_moment_lateral(section_properties, member_properties):
   M_yield = yield_bending_moment(section_properties,axis)
 
   # calculate slenderness ratio using eq 3.3.3.2.1(6)
-  print(f'Mo = {M_o}')
   lambda_b = (M_yield/M_o)**0.5
 
   if lambda_b <= 0.6:
@@ -1302,7 +1425,7 @@ def elastic_flexural_buckling_stress_D_1_1_2(section_properties, member_properti
 
   # calculate beta using eq D1.1.2(7). 
   beta = 1-(x0_avg/rol_avg)**2
-  # print(f'beta = {beta}')
+  print(f'beta = {beta}')
 
   #calculate foxz using eq D1.1.1(2)
   foxz = (1/(2*beta)) * ( (fox + foz) - ((fox + foz)**2 -4*beta*fox*foz )**0.5 )
