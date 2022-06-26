@@ -1430,7 +1430,7 @@ def elastic_flexural_buckling_stress_D_1_1_2(section_properties, member_properti
 
   # calculate beta using eq D1.1.2(7). 
   beta = 1-(x0_avg/rol_avg)**2
-  print(f'beta = {beta}')
+  # print(f'beta = {beta}')
 
   #calculate foxz using eq D1.1.1(2)
   foxz = (1/(2*beta)) * ( (fox + foz) - ((fox + foz)**2 -4*beta*fox*foz )**0.5 )
