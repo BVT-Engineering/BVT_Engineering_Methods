@@ -171,6 +171,8 @@ connection_properties = {
 
 print(connection_properties)
 
+section_properties['bolt hole diameter']
+
 """# Axis setter
 
 Information is input based on section x and y axis. This function converts values to major or minor axis, allowing sections to be input in any rotation.
@@ -356,7 +358,7 @@ def nominal_section_tension_capacity(section_properties,kt=0.75):
   else:
     An1 = Ag
 
-  A_bolt_holes = section_properties['bolt hole diameter']*section_properties['t'] 
+  A_bolt_holes = section_properties['bolt hole diameter'] * section_properties['t'] 
   An = An1 - A_bolt_holes
 
   N_t = min(
@@ -479,7 +481,8 @@ def nominal_member_bending_capacity(section_properties, member_properties, axis,
   if axis is not section_properties['major_axis']:
     # if we are considering minor axis bending take Mb_lat as infinity as it is not a failure mode
     Mb_lat = Ms
-  elif axis is section_properties['major_axis']:
+  elif axis is section_properties['major_axis'] and section_properties['symmetry axes'] in {'x','y','double'}:
+    # if section is symmetrical and under major axis bending then lateral buckling is assessed per Section 3.3.3.2
     Mb_lat = nominal_member_moment_capacity_lateral(section_properties, member_properties)
   
   if section_properties['is subject to distortional buckling?'] == True:
@@ -494,7 +497,7 @@ def nominal_member_bending_capacity(section_properties, member_properties, axis,
 
 """####3.3.3.2 Members subject to lateral buckling
 
-Only open sections are considered here, using section 3.3.3.2.1. Closed sections should be assessed using section 3.3.3.2.2 - this is not yet included in the performance function.
+Only open, symmetric sections are considered here, using section 3.3.3.2.1. Closed sections should be assessed using section 3.3.3.2.2 - this is not yet included in the performance function. Non-symmetric sections are not covered in Section 3.3.3.2.
 
 Equation 3.3.3.2.1(1) calculates member moment capacity based on the section modulus, $Z_c$ for the stress at the extreme compression fibre. For simplicity (and conservativeness), we use the section modulus at yield, $Z_e$, here:
 
@@ -505,14 +508,23 @@ Equation 3.3.3.2.1(1) calculates member moment capacity based on the section mod
 """
 
 def nominal_member_moment_capacity_lateral(section_properties, member_properties):
+  # this part only applies to symmetrical sections. if statement used to filter out incorrect use for non-symmetrical sections
+  if section_properties['symmetry axes'] == 'none':
+    Mb = 'Appendix D does not apply - M_o to be calculated by rational analysis'
+  elif section_properties['symmetry axes'] in {'x','y','double'}:
+    #get major axis Ze
+    section_properties = axis_setter(section_properties)
+    Ze_maj = section_properties['Ze_maj']
 
-  #get major axis Ze
-  section_properties = axis_setter(section_properties)
-  Ze_maj = section_properties['Ze_maj']
+    # get critical uckling stress
+    fc = critical_bending_stress_lateral(section_properties, member_properties)
 
-  fc = critical_bending_stress_lateral(section_properties, member_properties)
+    # get nominal member buckling capacity
+    Mb = Ze_maj*fc
+  
+  else:
+    Mb = 'Symmetry axis incorrectly specified. Allowed values are: "x","y","double", "none"'
 
-  Mb = Ze_maj*fc
   return Mb
 
 """The stress $f_c$ is calculated using equation 3.3.3.2.1(2):
