@@ -56,14 +56,13 @@ import pandas as pd
 import numpy as np
 import math
 
-"""# Section, member, connection properties dictionary for testing
-Input section and member properties dictionaries here to use for testing
-"""
+"""# Section, member, connection properties dictionaies set here
+NOTE: UNITS ARE N, Nmm, mm
 
-## TEST
-# print(f'Compression unity = {compression_unity(section_properties,member_properties)}')
-# print(f'Bending unity x = {bending_unity(section_properties,member_properties,"x")}')
-# print(f'Bending unity y = {bending_unity(section_properties,member_properties,"y")}')
+Input section and member properties dictionaries here to use for testing, as well as to set dictionaries - this is required for the functions to run as they are initially imported byt other Engineering Methods.
+
+When the functions are called, the relevant dictionaries are provided as part of the input so the information here will not be used.
+"""
 
 # section, member and connection property dicts are set here. When functions are called these are overridden with the information for the item to be checked
 # 100x67x2.0 post section properties. In this case X is used for the minor axis
@@ -132,14 +131,14 @@ print(section_properties)
 
 # 100x67x2.0 post member - typical values entered
 member_properties = {
-    'Mx' : 2.97e6,
-    'My' : 4.29e6,
-    'N'  : -52.8e3,
-    'Vx' : 0,
-    'Vy' : 5000,
-    'lex' : 1800,
-    'ley' : 1800,
-    'lez' : 1800,
+    'Mx' : 0.151,
+    'My' : 0.344,
+    'N'  : 30.908,
+    'Vx' : 5.301,
+    'Vy' : 2.13,
+    'lex' : 68.4,
+    'ley' : 76,
+    'lez' : 76,
     'cantilevered?': False
 }
 
@@ -171,8 +170,6 @@ connection_properties = {
 }
 
 print(connection_properties)
-
-section_properties['bolt hole diameter']
 
 """# Axis setter
 
@@ -236,9 +233,6 @@ def axis_setter(section_properties):
 
 """# Section Reviewer
 Reviews section_properties dictionary and returns an error if the section is outside of the scope of this performance function.
-
-This will occur if:
-- symmetry axes = 'none'
 
 """
 
@@ -336,7 +330,7 @@ def tension_unity(section_properties,**k_t):
     N_action = 0
 
   #calculate tension unity
-  tension_unity = N_t_action/(phi_t*N_t)
+  tension_unity = N_action/(phi_t*N_t)
   
   return tension_unity
 
@@ -1023,10 +1017,10 @@ def combined_bending_tension(section_properties,member_properties):
   Mby = nominal_member_bending_capacity(section_properties, member_properties, 'y', nominal_section_moment_capacity(section_properties)[1])
 
   # calculate unities
-  unity1 = (Mx_action/(phi_b_m*Mbx)) + (My_action/(phi_b_m*Mby)) - (N_action/phi_t*Nt)
-  unity2 = (N_action/phi_t*Nt) + (Mx_action/(phi_b_m*Msxf)) + (My_action/(phi_b_m*Msyf))
+  unity1 = (Mx_action/(phi_b_m*Mbx))  + (My_action/(phi_b_m*Mby))  - (N_action/(phi_t*Nt))
+  unity2 = (Mx_action/(phi_b_m*Msxf)) + (My_action/(phi_b_m*Msyf)) + (N_action/(phi_t*Nt)) 
 
-  unity = min(unity1, unity2)
+  unity = max(unity1, unity2)
 
   return unity
 
