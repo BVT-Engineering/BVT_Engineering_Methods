@@ -100,31 +100,13 @@ section_properties = {
         'hole length': 25,
         'hole spacing': 76,
         },
-      'is subject to distortional buckling?': True,
-      'fod' : {'section_type':'general channel',
-               'fod_x':574,
+    'is subject to distortional buckling?': True,
+    'fod' : {'fod_x':574,
                'fod_y':675,
-               'fod_c':319, 
-               'general_channel_properties':{'A'  : 0,
-                                             'J'  : 0,
-                                             'Ix' : 0,
-                                             'Iy' : 0,
-                                             'Ixy': 0,
-                                             'Iw' : 0,
-                                             'x0' : 0,
-                                             'y0' : 0,
-                                             'hx' : 0,
-                                             'hy' : 0,
-                                             'bw' : 0 
-                                            },
-               'simple_lipped_channel_properties':{'bf': 0,
-                                                   'bw': 0,
-                                                   't' : 0,
-                                                   'dl': 0
-                                                   }
+               'fod_c':319
                },
-      'is cylinder?': False,
-      'bolt hole diameter': 4*14
+    'is cylinder?': False,
+    'bolt hole diameter': 4*14
 }
 
 print(section_properties)
@@ -249,14 +231,6 @@ def section_reviewer(section_properties):
   else:
     errors.append('"symmetry axes" input not recognised. Input should be string of either "x", "y", "double", "Z point symmetric" or "none"')
 
-  # check if distortional buckling properties correctly entered
-  if section_properties['is subject to distortional buckling?'] == False:
-    errors.append('Warning: "is subject to distortional buckling" selected as "False". Section will not be assessed for distortional buckling failure. Ensure section has been assessed and is not subject to distortional buckling')
-  elif section_properties['is subject to distortional buckling?'] == True and section_properties['fod']['section_type'] == 'other':
-    errors.append('Warning: distortional buckling for the section type selected is not covered in Appendix D. Carry out distortional buckling checks via other rational analysis (e.g. ANSYS, CUFSM) and ensure correct distortional buckling stresses are entered')
-  elif section_properties['fod']['section_type'] not in {'general channel','simple lipped channel','Z section','other'}:
-     errors.append('Error: distortional buckling section type not allowed. Choose from: "general channel","simple lipped channel","Z section","other"')
-
   #check for G550 steel, under 0.9 mm BMT
   if section_properties['fy'] >= 550 and section_properties['t'] < 0.9:
     errors.append('Error: additional requirements for G550 steel, less than 0.9 mm BMT given in Section 3.4.1 are not covered in this function library')
@@ -316,7 +290,7 @@ The tension unity for the member is calculated:
 $
 """
 
-def tension_unity(section_properties,**k_t):
+def tension_unity(section_properties, member_properties, **k_t):
   # get phi_t from Table 1.6.3 dataframe. .loc gets the series corresponding to 'Reference' = 3.2, .iloc[0] takes the first value of this series, which is the phi factor
   phi_t = table1_6_3.loc[table1_6_3['Reference'] == '3.2','Capacity Reduction Factor'].iloc[0]
 
@@ -919,7 +893,7 @@ def combined_bending_compression(section_properties,member_properties):
   phi_c = phi_c.iloc[0]
 
   # set Cmx and Cmy. This is 0.85 unless 'is cantilever?' input is True, in which case one end is unrestrained therefore C_m = 1
-  if section_properties['is cylinder?'] is True:
+  if section_properties['cantilevered'] is True:
     Cmx, Cmy = 1,1
   else:
     Cmx, Cmy = 0.85, 0.85
