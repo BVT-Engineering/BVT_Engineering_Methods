@@ -81,7 +81,7 @@ section_properties = {
     'Ae': 494,
     'x0': 0,
     'y0': -58.3515,
-    'beta_y': 123.3769,		
+    'beta': 123.3769,		
     'E' : 200e3,
     'G' : 80e3,
     'fy': 345,
@@ -1504,7 +1504,7 @@ def elastic_lateral_torsional_buckling_moment(section_properties, member_propert
     Iw = section_properties['Iw']
     Imaj = section_properties['I_maj']
     Imin = section_properties['I_min']
-    beta_y = section_properties['beta_y']
+    beta_y = section_properties['beta']
 
     # define polar radius of gyration per eq D2.1.1(3)
     r_ol = (r_maj**2 + r_min**2 + shear_centre_maj**2 + shear_centre_min**2)**0.5
