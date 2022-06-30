@@ -1048,6 +1048,8 @@ def bolted_connection_shear_unity(connection_properties):
 
   return unity
 
+"""### 5.3.2 Tearout"""
+
 def bolt_tearout_unity(connection_properties):
   # tearout capacity checked for both sections, per Section 5.3.2
 
@@ -1097,6 +1099,8 @@ def bolt_tearout_unity(connection_properties):
 
   return unity
 
+"""### 5.3.3 Net section tension"""
+
 def bolt_net_section_tension(connection_properties):
   # net section tension capacity checked for both sections, per Section 5.3.3
 
@@ -1131,6 +1135,29 @@ def bolt_net_section_tension(connection_properties):
   unity = V/(phi*Nf)
 
   return unity
+
+"""### 5.3.4 Bearing
+
+This section inludes Table 5.3.4.2(A). This must be accessed by the engineering method, and the appropriate value of alpha provided as part of the `connection_properties` dict provided to the `bolt_bearing` function.
+
+#### Table 5.3.4.2(A)
+"""
+
+#@title Table 5.3.4.2(A) - Modification factor ($\alpha$) for type of bearing connection { vertical-output: true }
+
+table5_3_4_2A = pd.DataFrame([
+                                ['Single shear and outside sheets of double shear connection with washers under both bolt head and nut',1],
+                                ['Single shear and outside sheets of double shear connection without washers under both bolt head and nut, or with only one washer',0.75],
+                                ['Single shear and outside sheets of double shear connection using oversized or short-slotted holes parallel to the applied load without washers under both bolt head and nut, or with only one washer',0.7],
+                                ['Single shear and outside sheets of double shear connection using oversized or short-slotted holes perpendicular to the applied load without washers under both bolt head and nut, or with only one washer',0.55],
+                                ['Inside sheet of double shear connection with or without washers',1.33,],
+                                ['Inside sheet of double shear connection using oversized or short-slotted holes parallel to the applied load with or without washers',1.10],
+                                ['Inside sheet of double shear connection using oversized or short-slotted holes perpendicular to the applied load with or without washers',0.9]
+                                ],
+                                columns = ['Type of bearing','alpha']
+                                )
+
+table5_3_4_2A
 
 def bolt_bearing(connection_properties):
   # bolt bearing capacity checked for both sections, per Section 5.3.4
