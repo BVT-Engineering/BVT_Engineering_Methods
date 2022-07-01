@@ -893,7 +893,7 @@ def combined_bending_compression(section_properties,member_properties):
   phi_c = phi_c.iloc[0]
 
   # set Cmx and Cmy. This is 0.85 unless 'is cantilever?' input is True, in which case one end is unrestrained therefore C_m = 1
-  if section_properties['cantilevered'] is True:
+  if member_properties['cantilevered?'] is True:
     Cmx, Cmy = 1,1
   else:
     Cmx, Cmy = 0.85, 0.85
@@ -1505,6 +1505,15 @@ def elastic_lateral_torsional_buckling_moment(section_properties, member_propert
     Imaj = section_properties['I_maj']
     Imin = section_properties['I_min']
     beta_y = section_properties['beta']
+
+    if section_properties['major_axis'] is 'x':
+      l_e_maj = member_properties['lex']
+      l_e_min = member_properties['ley']
+      l_e_torsion = member_properties['lez']
+    elif section_properties['major_axis'] is 'y':
+      l_e_maj = member_properties['ley']
+      l_e_min = member_properties['lex']
+      l_e_torsion = member_properties['lez']
 
     # define polar radius of gyration per eq D2.1.1(3)
     r_ol = (r_maj**2 + r_min**2 + shear_centre_maj**2 + shear_centre_min**2)**0.5
