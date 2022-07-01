@@ -211,7 +211,7 @@ def axis_setter(section_properties):
     elif section_properties['symmetry axes'] =='x':
       section_properties['symmetry axes maj min'] = 'min'
 
-    return section_properties
+  return section_properties
 
 """# Section Reviewer
 Reviews section_properties dictionary and returns an error if the section is outside of the scope of this performance function.
