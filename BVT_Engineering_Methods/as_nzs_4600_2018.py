@@ -795,6 +795,8 @@ def compression_unity(section_properties,member_properties):
   # get compression action. If N action is positive this indicates member tension, so compression is zero. Negative action is converted to positive
   if member_properties['N'] <= 0:
     N_action = -member_properties['N']
+  else:
+    N_action = 0
     
   # unity per 3.4.1(a)
   unity_a = N_action/(phi_c*Ns)
