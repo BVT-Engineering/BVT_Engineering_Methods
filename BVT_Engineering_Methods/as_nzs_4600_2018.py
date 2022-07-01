@@ -1119,7 +1119,7 @@ def bolt_net_section_tension(connection_properties):
   An2 = connection_properties['An2']
 
   # if fastener spacing perpendicular to shear force is not filled in, take the sheet widths perpendicular to shear force
-  if connection_properties['spacing'] == None:
+  if (connection_properties['spacing'] == None) or (connection_properties['spacing'] == 0):
     s1 = connection_properties['w1']
     s2 = connection_properties['w2']
   else:
