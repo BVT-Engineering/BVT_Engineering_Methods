@@ -236,7 +236,7 @@ def section_reviewer(section_properties):
     errors.append('Error: additional requirements for G550 steel, less than 0.9 mm BMT given in Section 3.4.1 are not covered in this function library')
 
   #check for G550 steel, under 0.9 mm BMT
-  if section_properties['is cylinder?'] is True:
+  if section_properties['is cylinder?'] == True:
     errors.append('Error: Member capacity calculations for cylinders as given in Section 3.6 are not covered in this function library')
 
   return errors
@@ -322,7 +322,7 @@ def nominal_section_tension_capacity(section_properties,kt=0.75):
   fu = section_properties['fu']
   
   # get net area by taking gross area (non-holed sections) or holed net area (holed sections) and subtracting the fastener hole diameter if applicable
-  if section_properties['hole sections']['holes present?'] is True:
+  if section_properties['hole sections']['holes present?'] == True:
     An1 = section_properties['hole sections']['A,net']
   else:
     An1 = Ag
@@ -447,10 +447,10 @@ def nominal_member_bending_capacity(section_properties, member_properties, axis,
   section_properties = axis_setter(section_properties)
   
   # find limiting capacity out of lateral and distortional buckling. If section is set as not subject to distortional buckling, this value is set as equal to the lateral buckling capacity
-  if axis is not section_properties['major_axis']:
+  if axis != section_properties['major_axis']:
     # if we are considering minor axis bending take Mb_lat as infinity as it is not a failure mode
     Mb_lat = Ms
-  elif axis is section_properties['major_axis'] and section_properties['symmetry axes'] in {'x','y','double'}:
+  elif axis == section_properties['major_axis'] and section_properties['symmetry axes'] in {'x','y','double'}:
     # if section is symmetrical and under major axis bending then lateral buckling is assessed per Section 3.3.3.2
     Mb_lat = nominal_member_moment_capacity_lateral(section_properties, member_properties)
   
@@ -895,7 +895,7 @@ def combined_bending_compression(section_properties,member_properties):
   phi_c = phi_c.iloc[0]
 
   # set Cmx and Cmy. This is 0.85 unless 'is cantilever?' input is True, in which case one end is unrestrained therefore C_m = 1
-  if member_properties['cantilevered?'] is True:
+  if member_properties['cantilevered?'] == True:
     Cmx, Cmy = 1,1
   else:
     Cmx, Cmy = 0.85, 0.85
@@ -935,10 +935,10 @@ def combined_bending_compression(section_properties,member_properties):
 
 def moment_amplification_factor(section_properties,member_properties, axis):
   # get axis dependent properties
-  if axis is 'x':
+  if axis == 'x':
     Ib = section_properties['Ix']
     leb = member_properties['lex']
-  elif axis is 'y':
+  elif axis == 'y':
     Ib = section_properties['Iy']
     leb = member_properties['ley']
 
@@ -1009,11 +1009,11 @@ def connection_shear_unity(connection_properties):
   # get connection type
   connection_type = connection_properties['connection type']
   
-  if connection_type is 'welded':
+  if connection_type == 'welded':
     unity = 'Error - welded connections not currently covered'
-  elif connection_type is 'bolted':
+  elif connection_type == 'bolted':
     unity = bolted_connection_shear_unity(connection_properties)
-  elif connection_type is 'screwed':
+  elif connection_type == 'screwed':
     unity = 'Error - Screwed connections not currently covered'
   else:
     unity = 'Error - Connection type not recognised'
@@ -1119,7 +1119,7 @@ def bolt_net_section_tension(connection_properties):
   An2 = connection_properties['An2']
 
   # if fastener spacing perpendicular to shear force is not filled in, take the sheet widths perpendicular to shear force
-  if connection_properties['spacing'] is None:
+  if connection_properties['spacing'] == None:
     s1 = connection_properties['w1']
     s2 = connection_properties['w2']
   else:
@@ -1508,11 +1508,11 @@ def elastic_lateral_torsional_buckling_moment(section_properties, member_propert
     Imin = section_properties['I_min']
     beta_y = section_properties['beta']
 
-    if section_properties['major_axis'] is 'x':
+    if section_properties['major_axis'] == 'x':
       l_e_maj = member_properties['lex']
       l_e_min = member_properties['ley']
       l_e_torsion = member_properties['lez']
-    elif section_properties['major_axis'] is 'y':
+    elif section_properties['major_axis'] == 'y':
       l_e_maj = member_properties['ley']
       l_e_min = member_properties['lex']
       l_e_torsion = member_properties['lez']
