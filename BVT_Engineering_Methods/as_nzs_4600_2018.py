@@ -869,7 +869,7 @@ def slenderness_compression(section_properties, member_properties):
 Function below can be called when it is unknown whether the member will be in tension or compression. It will selct the correct unity equations to evaluate and return that unity value.
 """
 
-def 3_5_combined_axial_compression_or_tension_and_bending(section_properties,member_properties):
+def Clause_3_5_combined_axial_compression_or_tension_and_bending(section_properties,member_properties):
   if member_properties['N'] <= 0:
     # if axial load is negative (i.e. compression) use Section 3.5.1. This also includes cases with no axial load although this is not defined in the standard
     unity = combined_bending_compression(section_properties,member_properties)
@@ -1009,7 +1009,7 @@ def combined_bending_tension(section_properties,member_properties):
 A main function is defined for both shear and tension capacity to ensure the correct connection type is checked.
 """
 
-def 5_2_and_5_3_connection_shear_unity(connection_properties):
+def Clauses_5_2_and_5_3_connection_shear_unity(connection_properties):
   # get connection type
   connection_type = connection_properties['connection type']
   
