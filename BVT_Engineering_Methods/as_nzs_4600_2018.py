@@ -1527,9 +1527,9 @@ def elastic_lateral_torsional_buckling_moment(section_properties, member_propert
     # elastic buckling stresses per D1.1
     # non-holed sections
     if section_properties['hole sections']['holes present?'] == False:
-      f_ox = ((math.pi()**2)*E)  /  ((l_e_maj/r_maj)**2)
-      f_oy = ((math.pi()**2)*E)  /  ((l_e_min/r_min)**2)
-      f_oz = ((G*J) / (A_g*r_ol**2)) * (1+(math.pi()**2*E*Iw) / (G*J*l_e_torsion**2))
+      f_ox = ((math.pi**2)*E)  /  ((l_e_maj/r_maj)**2)
+      f_oy = ((math.pi**2)*E)  /  ((l_e_min/r_min)**2)
+      f_oz = ((G*J) / (A_g*r_ol**2)) * (1+(math.pi**2*E*Iw) / (G*J*l_e_torsion**2))
 
     # holed-sections
     elif section_properties['hole sections']['holes present?'] == True:
