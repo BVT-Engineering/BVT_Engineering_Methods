@@ -56,7 +56,7 @@ import pandas as pd
 import numpy as np
 import math
 
-"""# Section, member, connection properties dictionaies set here
+"""# Section, member, connection properties dictionaries set here
 NOTE: UNITS ARE N, Nmm, mm
 
 Input section and member properties dictionaries here to use for testing, as well as to set dictionaries - this is required for the functions to run as they are initially imported byt other Engineering Methods.
@@ -185,6 +185,8 @@ def axis_setter(section_properties):
       section_properties['symmetry axes maj min'] = 'maj'
     elif section_properties['symmetry axes'] =='y':
       section_properties['symmetry axes maj min'] = 'min'
+    elif section_properties['symmetry axes'] =='Double':
+      section_properties['symmetry axes maj min'] = 'both'
 
   else:
     section_properties['major_axis'] = 'y'
@@ -210,6 +212,8 @@ def axis_setter(section_properties):
       section_properties['symmetry axes maj min'] = 'maj'
     elif section_properties['symmetry axes'] =='x':
       section_properties['symmetry axes maj min'] = 'min'
+    elif section_properties['symmetry axes'] =='Double':
+      section_properties['symmetry axes maj min'] = 'both'
 
   return section_properties
 
@@ -322,7 +326,7 @@ def nominal_section_tension_capacity(section_properties,kt=0.75):
   fu = section_properties['fu']
   
   # get net area by taking gross area (non-holed sections) or holed net area (holed sections) and subtracting the fastener hole diameter if applicable
-  if section_properties['hole sections']['holes present?'] == True:
+  if section_properties['hole sections']['holes present?']== True:
     An1 = section_properties['hole sections']['A,net']
   else:
     An1 = Ag
@@ -862,10 +866,10 @@ def slenderness_compression(section_properties, member_properties):
 
 """## 3.5 Combined Axial compression or tension, and bending
 
-Function below can be called when it is unknown whether the member will be in tension or compression. It will selct the correct unity equyations to evaluate and return that unity value.
+Function below can be called when it is unknown whether the member will be in tension or compression. It will selct the correct unity equations to evaluate and return that unity value.
 """
 
-def combined_axial_bending(section_properties,member_properties):
+def 3_5_combined_axial_compression_or_tension_and_bending(section_properties,member_properties):
   if member_properties['N'] <= 0:
     # if axial load is negative (i.e. compression) use Section 3.5.1. This also includes cases with no axial load although this is not defined in the standard
     unity = combined_bending_compression(section_properties,member_properties)
@@ -1005,7 +1009,7 @@ def combined_bending_tension(section_properties,member_properties):
 A main function is defined for both shear and tension capacity to ensure the correct connection type is checked.
 """
 
-def connection_shear_unity(connection_properties):
+def 5_2_and_5_3_connection_shear_unity(connection_properties):
   # get connection type
   connection_type = connection_properties['connection type']
   
