@@ -190,11 +190,11 @@ def axis_setter(section_properties):
 
   else:
     section_properties['major_axis'] = 'y'
-    section_properties['I_maj'] = section_properties['Iy']
+    section_properties['Imaj'] = section_properties['Iy']
     section_properties['Zf_maj'] = section_properties['Zy']
     section_properties['Ze_maj'] = section_properties['Zey']
     section_properties['shear_centre_maj'] = section_properties['y0'] 
-    section_properties['I_min'] = section_properties['Ix']
+    section_properties['Imin'] = section_properties['Ix']
     section_properties['Zf_min'] = section_properties['Zx']
     section_properties['Ze_min'] = section_properties['Zex']
     section_properties['shear_centre_min'] = section_properties['x0'] 
