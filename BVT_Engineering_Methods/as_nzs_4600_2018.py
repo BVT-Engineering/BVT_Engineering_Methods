@@ -185,8 +185,8 @@ def axis_setter(section_properties):
       section_properties['symmetry axes maj min'] = 'maj'
     elif section_properties['symmetry axes'] =='y':
       section_properties['symmetry axes maj min'] = 'min'
-    elif section_properties['symmetry axes'] =='Double':
-      section_properties['symmetry axes maj min'] = 'both'
+    elif section_properties['symmetry axes'] =='double':
+      section_properties['symmetry axes maj min'] = 'double'
 
   else:
     section_properties['major_axis'] = 'y'
@@ -212,8 +212,8 @@ def axis_setter(section_properties):
       section_properties['symmetry axes maj min'] = 'maj'
     elif section_properties['symmetry axes'] =='x':
       section_properties['symmetry axes maj min'] = 'min'
-    elif section_properties['symmetry axes'] =='Double':
-      section_properties['symmetry axes maj min'] = 'both'
+    elif section_properties['symmetry axes'] =='double':
+      section_properties['symmetry axes maj min'] = 'double'
 
   return section_properties
 
@@ -1502,15 +1502,15 @@ def elastic_lateral_torsional_buckling_moment(section_properties, member_propert
     A_g = section_properties['Af']
     shear_centre_maj = section_properties['shear_centre_maj']
     shear_centre_min = section_properties['shear_centre_min']
-    r_maj = (section_properties['I_maj']/A_g)**0.5
-    r_min = (section_properties['I_min']/A_g)**0.5
     E = section_properties['E']
     G = section_properties['G']
     J = section_properties['J']
     Iw = section_properties['Iw']
-    Imaj = section_properties['I_maj']
-    Imin = section_properties['I_min']
+    Imaj = section_properties['Imaj']
+    Imin = section_properties['Imin']
     beta_y = section_properties['beta']
+    r_maj = (Imaj/A_g)**0.5
+    r_min = (Imin/A_g)**0.5
 
     if section_properties['major_axis'] == 'x':
       l_e_maj = member_properties['lex']
