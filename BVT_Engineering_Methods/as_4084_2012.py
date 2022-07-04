@@ -29,10 +29,10 @@ Alternative method (a) is used:
 
 where $L$ is the height between beam levels
 
-Eq. 4.2.2.2 and alternative methid (b) are not currently covered.
+Eq. 4.2.2.2 and alternative method (b) are not currently covered.
 """
 
-def post_le_down_aisle_GNA(L, down_aisle_bracing):
+def Clause_4_2_2_2a_post_le_down_aisle_GNA(L, down_aisle_bracing):
   # le = L whether rack is unbraced or braced in down aisle
   if down_aisle_bracing is 'unbraced' or down_aisle_bracing is 'braced':
     le = L
@@ -41,7 +41,7 @@ def post_le_down_aisle_GNA(L, down_aisle_bracing):
 
   return le
 
-"""####4.2.2.4 Design based on global nonlinear strcutural analysis considering the cross aisle direction
+"""####4.2.2.4 Design based on global nonlinear structural analysis considering the cross aisle direction
 
 Alternative methods a,b,c are covered:
 
@@ -62,7 +62,7 @@ otherwise $l_e=L$
 
 """
 
-def post_le_across_aisle_GNA(bottom_brace_height, brace_spacing, is_below_second_brace_node, is_bracing_eccentricity_low, is_floor_concrete, is_baseplate_fitted):
+def Clause_4_2_2_4ab_post_le_across_aisle_GNA(bottom_brace_height, brace_spacing, is_below_second_brace_node, is_bracing_eccentricity_low, is_floor_concrete, is_baseplate_fitted):
   if is_floor_concrete is True and is_baseplate_fitted is True and is_bracing_eccentricity_low is True:
     # alternative (a) applies
     if is_below_second_brace_node is True:
@@ -76,7 +76,7 @@ def post_le_across_aisle_GNA(bottom_brace_height, brace_spacing, is_below_second
 
   return le
 
-def brace_le_across_aisle_GNA(brace_welds_longer_than_20mm, brace_length):
+def Clause_4_2_2_4c_brace_le_across_aisle_GNA(brace_welds_longer_than_20mm, brace_length):
   # alternative (c) for brace effective length
   if brace_welds_longer_than_20mm == True:
     le = 0.9*brace_length
@@ -94,6 +94,6 @@ Alternative (b) allows for the torsional buckling length of posts to be halved w
 The input, brace sapcing, is the distance between brace nodes for the part of the post in question.
 """
 
-def post_le_torsional(brace_spacing):
+def Clause_4_2_2_5a_post_le_torsional(brace_spacing):
   le = brace_spacing
   return le
