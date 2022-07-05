@@ -11,14 +11,21 @@ Original file is located at
 This method references the following standard:
 NZS 1170.5:2004 (incorporating Amendment Nos 1), for New Zealand structures.
 
-Method developed 28 August 2021
-(c) BVT Consulting Ltd
+Created by *Matt Bishop* on *28 August 2021* 
 
-Developed - MMB
+Copyright (c) BVT Consulting Ltd 2022
 
 Reviewed - SB
 
 03.05.2022 - SB - DRAFT Sections 4,5 added
+Approved by *Matt Bishop, CPEng #243786*, on behalf of BVT Consulting Ltd
+
+**Version summary:**
+
+28/08/2021 - v 1.0 - Initial Release
+
+30/05/2022 - v 1.1 - Minor update. Changed section 8.3 floor height coefficient
+
 
 ###Initialise  Dependents and Libraries
 """
@@ -533,13 +540,14 @@ h_n =  12#@param {type:"number"}
 def floor_height__coefficient(h_i,h_n):
   
   if h_i < 12 :
-      C_Hi = (h_i/6)
-  elif h_i < 0.2*h_n:
-    if (1+h_i/6) > (1+10*(h_i/h_n)):
-      C_Hi = (1+10*(h_i/h_n))
+    C_Hi = (1 + h_i/6)
+  if h_i < 0.2*h_n:
+    if (1 + h_i/6) > (1 + 10*(h_i/h_n)):
+      C_Hi = (1 + 10*(h_i/h_n))
     else:
-      C_Hi = (1+h_i/6)
-  elif h_i >= 0.2*h_n:
+      C_Hi = (1 + h_i/6)
+
+  if h_i >= 0.2*h_n:
       C_Hi = 3.0
 
   return C_Hi
