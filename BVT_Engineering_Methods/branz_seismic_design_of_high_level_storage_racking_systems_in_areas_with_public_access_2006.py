@@ -23,7 +23,7 @@ Reviewed -
 
 # Commented out IPython magic to ensure Python compatibility.
 # %%capture
-!pip install git+https://github.com/sambamford-bvtengineering/BVT_Engineering_Methods.git
+# pip install git+https://github.com/sambamford-bvtengineering/BVT_Engineering_Methods.git
 #BVT Standards function library, https://github.com/BVT-Engineering/BVT_Engineering_Methods 
 from BVT_Engineering_Methods import asnzs_1170_0_2002 as ASNZS_1170_0
 # #import AS/NZS 1170.0 Structural design actions - Part 0: General principles, https://colab.research.google.com/drive/1vXdyWK3uu6MncNY87YmABolL_-iVVzg2
