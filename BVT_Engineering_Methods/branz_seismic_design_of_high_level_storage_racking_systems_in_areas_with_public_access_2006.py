@@ -16,17 +16,39 @@ Reviewed -
 
 **Version summary:**
 
-05.07.2022 - v 1.0 - Sections 3.1.3 added. Initial release for use in BVT Selective/ Pallet Racking Performance Function
+05.07.2022 - v 1.0 - Sections 3.1.2,3,4 added. Initial release for use in BVT Selective/ Pallet Racking Performance Function
 
-# Section 3 Rack Design
+# Dependant modules and code libraries
+"""
+
+!pip install git+https://github.com/sambamford-bvtengineering/BVT_Engineering_Methods.git
+#Sam Bamford branch of BVT Standards function library, https://github.com/BVT-Engineering/BVT_Engineering_Methods. USED FOR FUNCTION WRITING, TESTING ONLY. FINAL FUNCTION SHOULD INSTALL MAIN BVT LIBRARY
+#!pip install git+https://github.com/BVT_Engineering_Methods.git
+#BVT Standards function library, https://github.com/BVT-Engineering/BVT_Engineering_Methods.
+
+from BVT_Engineering_Methods import asnzs_1170_0_2002 as ASNZS_1170_0
+#import AS/NZS 1170.0 Structural design actions - Part 0: General principles, https://colab.research.google.com/drive/1vXdyWK3uu6MncNY87YmABolL_-iVVzg2
+
+"""# Section 3 Rack Design
 
 ## 3.1 Applicable design standards
 
-### 3.1.3 Gravity load from shelf contents
+### 3.1.2 Load combinations
+
+This section gives the relevant load combinations from AS/NZS 1170.0. 
+
+The load factors to be applied to the $G$ and $Q$ loads in the ULS static case are defined here.
+"""
+
+Section_3_1_2_G_factor = ASNZS_1170_0.Section_4_2and3_load_combination_factors(action = "G, permanent action", load_case_general = "ULS strength", load_case_specific = "permanent and imposed action")
+
+Section_3_1_2_Q_factor = ASNZS_1170_0.Section_4_2and3_load_combination_factors(action = "Q, imposed or live action", load_case_general = "ULS strength", load_case_specific = "permanent and imposed action")
+
+"""### 3.1.3 Gravity load from shelf contents
 
 This section specifies the load combination factors to be applied to the live load ($Q$) when it is used in seismic load combinations.
 
-For the cross-aisle direction, racking systems must be designed using a $\psi_c$ of 1.0 and for the down-aisle drirection, a figure of 0.6 may be used
+For the cross-aisle direction, racking systems must be designed using a $\psi_c$ of 1.0 and for the down-aisle drirection, a figure of 0.6 may be used 
 """
 
 # define psi_c combination factors
