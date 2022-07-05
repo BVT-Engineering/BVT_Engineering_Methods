@@ -23,7 +23,7 @@ Reviewed -
 
 # Commented out IPython magic to ensure Python compatibility.
 # %%capture
-Pip3 install git+https://github.com/BVT-Engineering/BVT_Engineering_Methods.git
+pip install git+https://github.com/BVT-Engineering/BVT_Engineering_Methods.git
 # #BVT Standards function library, https://github.com/BVT-Engineering/BVT_Engineering_Methods.
 # 
 from BVT_Engineering_Methods import asnzs_1170_0_2002 as ASNZS_1170_0
