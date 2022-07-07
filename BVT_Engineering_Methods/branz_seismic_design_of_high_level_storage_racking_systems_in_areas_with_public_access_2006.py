@@ -16,15 +16,17 @@ Reviewed -
 
 **Version summary:**
 
-05.07.2022 - v 1.0 - Sections 3.1.2,3,4 added. Initial release for use in BVT Selective/ Pallet Racking Performance Function
+07.07.2022 - v 1.0 - Sections 3.1.2,3,4 added. Initial release for use in BVT Selective/ Pallet Racking Performance Function
 
 # Dependant modules and code libraries
 """
 
 # Commented out IPython magic to ensure Python compatibility.
 # %%capture
-# pip install git+https://github.com/sambamford-bvtengineering/BVT_Engineering_Methods.git
-#BVT Standards function library, https://github.com/BVT-Engineering/BVT_Engineering_Methods 
+
+# !pip install git+https://github.com/BVT-Engineering/BVT_Engineering_Methods.git
+# #BVT Standards function library, https://github.com/BVT-Engineering/BVT_Engineering_Methods.
+# 
 from BVT_Engineering_Methods import asnzs_1170_0_2002 as ASNZS_1170_0
 # #import AS/NZS 1170.0 Structural design actions - Part 0: General principles, https://colab.research.google.com/drive/1vXdyWK3uu6MncNY87YmABolL_-iVVzg2
 
@@ -61,6 +63,8 @@ The equation given here to calculate seismic weight is used.
 The area reduction factor, $\psi_E$, is taken as 1.0 for across-aisle and 0.8 for down-aisle.
 
 The rigid mass factor, $\psi_M$, is taken as 0.67. An option is also provided to not use the rigid mass factor.
+
+The area reduction and rigid mass factors are also defined seperately.
 """
 
 def Section_3_1_4_seismic_weight(Gi,Qi,direction, use_rigid_mass_factor):
@@ -86,3 +90,7 @@ def Section_3_1_4_seismic_weight(Gi,Qi,direction, use_rigid_mass_factor):
   Wi = Gi + psi_E*psi_M*Qi
 
   return Wi
+
+Section_3_1_4_rigid_mass_factor = 0.67
+Section_3_1_4_area_reduction_factor_down = 0.8
+Section_3_1_4_area_reduction_factor_across = 1.0
