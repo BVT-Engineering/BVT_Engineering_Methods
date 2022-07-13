@@ -52,7 +52,7 @@ table3_1 = pd.DataFrame(
  index = [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5]
  )
 
-table3_1.plot(table=True,figsize=(15, 10))
+# table3_1.plot(table=True,figsize=(15, 10))
 
 #@title Table 3.1(1) - Spectral shape factor, $C_h(T)$ - Modal analysis, numerical integration time history analysis, vertical loading and parts. { vertical-output: true }
 
