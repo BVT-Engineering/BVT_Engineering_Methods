@@ -66,7 +66,7 @@ table3_1_1 = pd.DataFrame(
  index = [0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5]
  )
 
-table3_1_1.plot(table=True,figsize=(15, 10))
+# table3_1_1.plot(table=True,figsize=(15, 10))
 
 #@title spectral_shape_factor(Subsoil_Type,T,spectral_method) { run: "auto", vertical-output: true }
 #@markdown Subsoil Type
