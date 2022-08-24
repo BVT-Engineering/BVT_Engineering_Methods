@@ -2,10 +2,10 @@
 Python function libraries for common engineering and construction standards.
 
 Currently we have methods in development for:
-- AS 4084 2012 - some clauses
 - AS/NZS 4600 2018 - comprehensive
-- AS/NZS 1170.0 2002 - some clauses and tables
-- NZS 1170.5 2004 - Project level clauses, simple methods and parts
+- AS/NZS 1170.0 2002 - Reference tables for project level parameters, load combinations and unities
+- NZS 1170.5 2004 - Section 3, section 5 (equivalent static method, section 8
+- AS 4084 2012 - just started
 
 A quick "how-to":
 
