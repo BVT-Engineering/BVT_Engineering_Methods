@@ -102,7 +102,10 @@ IL = 4 #@param ["1", "2", "3", "4"] {type:"raw"}
 LS = "Earthquake ULS" #@param ["Wind ULS", "Snow ULS", "Earthquake ULS", "SLS1", "SLS2"]
 
 def annual_probability_of_exceedence(N,IL,LS):
-
+    if type(IL) == str:
+        index = ["IL1", "IL2", "IL3", "IL4"].index(IL)
+        IL = [1 ,2, 3, 4][index]
+        
     P = table3_3.loc[(N,IL),LS]
 
     return P
