@@ -548,7 +548,10 @@ def floor_height__coefficient(h_i,h_n):
       C_Hi = (1 + h_i/6)
 
   if h_i >= 0.2*h_n:
+    if (1 + h_i/6) > 3.0:
       C_Hi = 3.0
+    else:
+      C_Hi = (1 + h_i/6)
 
   return C_Hi
 
