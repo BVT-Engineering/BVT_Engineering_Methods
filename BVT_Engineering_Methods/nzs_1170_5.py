@@ -538,19 +538,32 @@ h_i =  12#@param {type:"number"}
 h_n =  12#@param {type:"number"}
 
 def floor_height__coefficient(h_i,h_n):
+  C_Hi_1 = (1 + h_i/6)
+  C_Hi_2 = (1 + 10*(h_i/h_n))
+  C_Hi_3 = 3.0
   
-  if h_i < 12 :
-    C_Hi = (1 + h_i/6)
-  if h_i < 0.2*h_n:
-    if (1 + h_i/6) > (1 + 10*(h_i/h_n)):
-      C_Hi = (1 + 10*(h_i/h_n))
+  if h_n >= 12:
+    if h_i >= 0.2*h_n:
+      C_Hi = C_Hi_3
     else:
-      C_Hi = (1 + h_i/6)
-
-  if h_i >= 0.2*h_n:
-      C_Hi = 3.0
-
+      C_Hi = C_Hi_2
+  else:
+    C_Hi = min(C_Hi_1, C_Hi_2)
+  
   return C_Hi
+        
+#  if h_n < 12 :
+#    C_Hi = (1 + h_i/6)
+#  if h_i < 0.2*h_n:
+#    if (1 + h_i/6) > (1 + 10*(h_i/h_n)):
+#      C_Hi = (1 + 10*(h_i/h_n))
+#    else:
+#      C_Hi = (1 + h_i/6)
+
+#  if h_i >= 0.2*h_n:
+#      C_Hi = 3.0
+
+#  return C_Hi
 
 C_Hi = floor_height__coefficient(h_i,h_n)
   
