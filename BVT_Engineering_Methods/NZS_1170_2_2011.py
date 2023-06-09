@@ -198,7 +198,7 @@ def wind_region_speed(p, location):
 # In[5]:
 
 
-Vr = wind_region_speed(1/50, "Auckland")
+#Vr = wind_region_speed(1/50, "Auckland")
 #Vr
 
 
@@ -242,10 +242,13 @@ def interpolation(height):
     return interpolation_hn, lower_bound_index, upper_bound_index
 
 def Mz_cat(height, Terrain_category):
-    interpolation_height, lower_bound_index, upper_bound_index = interpolation(height)
-    mz_cat_low = Table4_1[Terrain_category][lower_bound_index]
-    mz_cat_high = Table4_1[Terrain_category][upper_bound_index]
-    Mz_cat = mz_cat_low + interpolation_height * (mz_cat_high - mz_cat_low)
+    if height <= 3:
+        Mz_cat = Table4_1[Terrain_category][0]
+    else:
+        interpolation_height, lower_bound_index, upper_bound_index = interpolation(height)
+        mz_cat_low = Table4_1[Terrain_category][lower_bound_index]
+        mz_cat_high = Table4_1[Terrain_category][upper_bound_index]
+        Mz_cat = mz_cat_low + interpolation_height * (mz_cat_high - mz_cat_low)
     
     return Mz_cat
     
@@ -267,15 +270,15 @@ def site_wind_speed(p, location, height, Terrain_category):
     
     Vr = wind_region_speed(p, location)
     Mz_cat_value = Mz_cat(height, Terrain_category)
-    
-    return Vr * Md * (Mz_cat_value * Ms * Mt)
+    v_site = Vr * Md * (Mz_cat_value * Ms * Mt)
+    return v_site
 
 
 # In[10]:
 
 
-v_site = site_wind_speed(1/1000, "Auckland", 20, "TC2")
-print("site_wind:", v_site)
+#v_site = site_wind_speed(1/1000, "Auckland", 20, "TC2")
+#print("site_wind:", v_site)
 
 
 # ### Calculate wind pressure
